@@ -56,4 +56,46 @@
   (i32.and (get_local $piece) (get_global $CROWN))
 )
 
+
+;; Sets a piece on the board
+(func $setPiece (param $x i32) (param $y i32) (param $piece i32)
+  (i32.store
+    (call $offsetForPosition
+      (get_local $x)
+      (get_local $y)
+    )
+    (get_local $piece)
+  )
+)
+
+;; Gets a piece from the board. Out of range cause a trap
+(func $getPiece (param $x i32) (param $y i32) (result i32)
+  (if (result i32)
+    (block (result i32)
+      (i32.and
+        (call $inRange
+          (i32.const 0)
+          (i32.const 7)
+          (get_local $x)
+        )
+        (call $inRange
+          (i32.const 0)
+          (i32.const 7)
+          (get_local $y)
+        )
+      )
+    )
+    ( then
+      (i32.load
+        (call $offsetForPosition
+          (get_local $x)
+          (get_local $y))
+      )
+    )
+    ( else
+      (unreachable)
+    )
+  )
+)
+
 )
